@@ -48,7 +48,7 @@ function timestampToDate(timestamp) {
  * @return {number} the day of the week of the specified date
  */
 function getUtcDay(date) {
-
+  return date.getUTCDay();
 }
 
 /**
