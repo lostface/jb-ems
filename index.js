@@ -7,6 +7,9 @@ const secsToMsecs = R.multiply(1000);
 const minsToMsecs = R.compose(secsToMsecs, R.multiply(60));
 const hoursToMsecs = R.compose(minsToMsecs, R.multiply(60));
 
+const WORK_HOUR_START_MSECS = hoursToMsecs(9);
+const WORK_HOUR_END_MSECS = hoursToMsecs(17);
+
 /**
  * @param {number} timestamp a date timestamp
  * @return {boolean} true if the specified date timestamp is a working day, otherwise false
@@ -20,7 +23,11 @@ const isWorkingDay = R.compose(
 /**
  * @param {number} timestamp a date timestamp
  */
-const isWorkingHour = (timestamp) => {};
+const isWorkingHour = R.compose(
+  R.both(R.gte(__, WORK_HOUR_START_MSECS), R.lte(__, WORK_HOUR_END_MSECS)),
+  getUtcTime,
+  timestampToDate
+);
 
 /**
  * @param {number} date a date timestamp
