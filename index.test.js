@@ -7,6 +7,7 @@ const isWorkingDay = index.isWorkingDay;
 const timestampToDate = index.timestampToDate;
 const getUtcDay = index.getUtcDay;
 const isWorkingHour = index.isWorkingHour;
+const getUtcTime = index.getUtcTime;
 const test = require('tape');
 
 // const WEEK_DAY_STRS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
@@ -243,6 +244,15 @@ test('isWorkingHour output', function(t) {
       },
     ];
   }
+});
+
+test.only('getUtcTime output', function(t) {
+  const date = new Date('Mon, 26 Sep 2016 12:34:56:789 GMT');
+  const expected = 789 + (56 * 1000) + (34 * 60 * 1000) + (12 * 60 * 60 * 1000); // 45296789
+  const actual = getUtcTime(date);
+
+  t.equal(actual, expected, `getUtcTime should return (${expected})`);
+  t.end();
 });
 
 function getGmtTime(dateStr) {

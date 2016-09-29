@@ -26,6 +26,7 @@ const isValidSubmitDate = R.both(isWorkingDay, isWorkingHour);
 module.exports = {
   calculateDueDate,
   getUtcDay,
+  getUtcTime,
   // isValidSubmitDate,
   isWorkingDay,
   isWorkingHour,
@@ -56,4 +57,12 @@ function timestampToDate(timestamp) {
  */
 function getUtcDay(date) {
   return date.getUTCDay();
+}
+
+/**
+ * @date {Date} date
+ * @return {number} the time part of the specified date in milliseconds
+ */
+function getUtcTime(date) {
+
 }
