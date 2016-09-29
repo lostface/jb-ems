@@ -35,11 +35,18 @@ const isWorkingHour = R.compose(
  */
 const isValidSubmitDate = R.both(isWorkingDay, isWorkingHour);
 
+/**
+ * @param {number} timestamp a date timestamp
+ * @return {boolean} true if the specified date is NOT on a working day in a working hour otherwise false
+ */
+const isNotValidSubmitDate = R.complement(isValidSubmitDate);
+
 module.exports = {
   calculateDueDate,
   getUtcDay,
   getUtcTime,
   hoursToMsecs,
+  isNotValidSubmitDate,
   isValidSubmitDate,
   isWorkingDay,
   isWorkingHour,
@@ -55,7 +62,11 @@ module.exports = {
  * @return {number} the due date timestamp calculated from the specified parameters
  */
 function calculateDueDate(submitTimestamp, turnaroundTime) {
-  // throw new Error('Invalid submitTimestamp parameter. Submit date should be a working day (Mon to Fri, 9:00 to 17:00)')
+  if (isNotValidSubmitDate(submitTimestamp)) {
+    throw new Error('Invalid submitTimestamp parameter. Submit date should be a working day (Mon to Fri, 9:00 to 17:00)')
+  }
+
+  // TODO
 }
 
 /**
