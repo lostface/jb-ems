@@ -15,27 +15,27 @@ module.exports = {
 };
 
 /**
- * @param {number} submitDate the submit date in timestamp
+ * @param {number} submitTimestamp the submit date in timestamp
  * @param {number} turnaroundTime the turnaround time in working hours
  * @throws {Error}
- * @return {number} the due date calculated from the specified submitDate and turnaroundTime
+ * @return {number} the due date timestamp calculated from the specified parameters
  */
-function calculateDueDate(submitDate, turnaroundTime) {
-  // throw new Error('Invalid submitDate parameter. Submit date should be a working day (Mon to Fri, 9:00 to 17:00)')
+function calculateDueDate(submitTimestamp, turnaroundTime) {
+  // throw new Error('Invalid submitTimestamp parameter. Submit date should be a working day (Mon to Fri, 9:00 to 17:00)')
 }
 
 /**
- * @param {number} date a date timestamp
+ * @param {number} timestamp a date timestamp
  */
-function isWorkingDay(date) {
-  const day = new Date(date).getDay();
+function isWorkingDay(timestamp) {
+  const day = new Date(timestamp).getDay();
   // the first day is Sunday
   return day > 0 && day < 6;
 }
 
 /**
- * @param {number} date a date timestamp
+ * @param {number} timestamp a date timestamp
  */
-function isWorkingHour(date) {
+function isWorkingHour(timestamp) {
 
 }
