@@ -3,9 +3,9 @@
 const R = require('ramda');
 const __ = R.__;
 
-const secsToMsecs = () => {};
-const minsToMsecs = () => {};
-const hoursToMsecs = () => {};
+const secsToMsecs = R.multiply(1000);
+const minsToMsecs = R.compose(secsToMsecs, R.multiply(60));
+const hoursToMsecs = R.compose(minsToMsecs, R.multiply(60));
 
 /**
  * @param {number} timestamp a date timestamp
