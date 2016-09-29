@@ -75,5 +75,5 @@ function getUtcTime(date) {
   const minutes = date.getUTCMinutes();
   const seconds = date.getUTCSeconds();
   const msecs = date.getUTCMilliseconds();
-  return msecs + (seconds * 1000) + (minutes * 60 * 1000) + (hours * 60 * 60 * 1000);
+  return msecs + secsToMsecs(seconds) + minsToMsecs(minutes) + hoursToMsecs(hours);
 }
