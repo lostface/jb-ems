@@ -64,5 +64,9 @@ function getUtcDay(date) {
  * @return {number} the time part of the specified date in milliseconds
  */
 function getUtcTime(date) {
-
+  const hours = date.getUTCHours();
+  const minutes = date.getUTCMinutes();
+  const seconds = date.getUTCSeconds();
+  const msecs = date.getUTCMilliseconds();
+  return msecs + (seconds * 1000) + (minutes * 60 * 1000) + (hours * 60 * 60 * 1000);
 }
