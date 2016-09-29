@@ -12,6 +12,7 @@ module.exports = {
   // isValidSubmitDate,
   isWorkingDay,
   // isWorkingHour,
+  timestampToDate,
 };
 
 /**
@@ -31,6 +32,13 @@ function isWorkingDay(timestamp) {
   const day = new Date(timestamp).getUTCDay();
   // the first day is Sunday
   return day > 0 && day < 6;
+}
+
+/**
+ * @param {number} timestamp a date timestamp
+ * @return {Date} new date obj init with the specified timestamp
+ */
+function timestampToDate(timestamp) {
 }
 
 /**

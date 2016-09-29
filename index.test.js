@@ -4,6 +4,7 @@ const R = require('ramda');
 const index = require('./index');
 const calculateDueDate = index.calculateDueDate;
 const isWorkingDay = index.isWorkingDay;
+const timestampToDate = index.timestampToDate;
 const test = require('tape');
 
 // const WEEK_DAY_STRS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
@@ -137,6 +138,15 @@ test('isWorkingDay output', function(t) {
       },
     ];
   }
+});
+
+test('timestampToDate output', function(t) {
+  const timestamp = getGmtTime('Mon, 26 Sep 2016 12:34:56');
+  const expected = 'Mon, 26 Sep 2016 12:34:56 GMT';
+  const actual = timestampToDate(timestamp).toGMTString();
+
+  t.equal(actual, expected, `timestampToDate should return (${expected})`);
+  t.end();
 });
 
 function getGmtTime(dateStr) {
