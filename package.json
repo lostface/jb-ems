@@ -4,7 +4,7 @@
   "description": "Due Date Calculator",
   "main": "index.js",
   "scripts": {
-    "test": "tape index.js | tap-spec",
+    "test": "tape *.test.js | tap-spec",
     "lint": "eslint . --ext .js --cache"
   },
   "author": "Zoltan Feher",
