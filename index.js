@@ -39,6 +39,7 @@ function isWorkingDay(timestamp) {
  * @return {Date} new date obj init with the specified timestamp
  */
 function timestampToDate(timestamp) {
+  return new Date(timestamp);
 }
 
 /**
