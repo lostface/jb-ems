@@ -5,6 +5,7 @@ const index = require('./index');
 const calculateDueDate = index.calculateDueDate;
 const isWorkingDay = index.isWorkingDay;
 const timestampToDate = index.timestampToDate;
+const getUtcDay = index.getUtcDay;
 const test = require('tape');
 
 // const WEEK_DAY_STRS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
@@ -147,6 +148,57 @@ test('timestampToDate output', function(t) {
 
   t.equal(actual, expected, `timestampToDate should return (${expected})`);
   t.end();
+});
+
+test('getUtcDay output', function(t) {
+  const paramsArr = getParams();
+  R.forEach(runTests, paramsArr);
+  t.end();
+
+  function runTests(param) {
+    const date = param.date;
+    const dateStr = new Date(date).toGMTString();
+    const expected = param.expected;
+
+    t.test(`getUtcDay output when called with (${dateStr})`, function(pt) {
+      const actual = getUtcDay(date);
+      pt.equal(actual, expected, `getUtcDay should return (${expected})`);
+      pt.end();
+    });
+  }
+
+  function getParams() {
+    return [
+      {
+        date: new Date('Mon, 26 Sep 2016 GMT'),
+        expected: 1,
+      },
+      {
+        date: new Date('Tue, 27 Sep 2016 GMT'),
+        expected: 2,
+      },
+      {
+        date: new Date('Wed, 28 Sep 2016 GMT'),
+        expected: 3,
+      },
+      {
+        date: new Date('Thu, 29 Sep 2016 GMT'),
+        expected: 4,
+      },
+      {
+        date: new Date('Fri, 30 Sep 2016 GMT'),
+        expected: 5,
+      },
+      {
+        date: new Date('Sat, 1 Oct 2016 GMT'),
+        expected: 6,
+      },
+      {
+        date: new Date('Sun, 2 Oct 2016 GMT'),
+        expected: 0,
+      },
+    ];
+  }
 });
 
 function getGmtTime(dateStr) {

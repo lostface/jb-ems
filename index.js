@@ -9,6 +9,7 @@ const isValidSubmitDate = R.both(isWorkingDay, isWorkingHour);
 
 module.exports = {
   calculateDueDate,
+  getUtcDay,
   // isValidSubmitDate,
   isWorkingDay,
   // isWorkingHour,
@@ -40,6 +41,14 @@ function isWorkingDay(timestamp) {
  */
 function timestampToDate(timestamp) {
   return new Date(timestamp);
+}
+
+/**
+ * @date {Date} date
+ * @return {number} the day of the week of the specified date
+ */
+function getUtcDay(date) {
+
 }
 
 /**
