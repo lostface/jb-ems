@@ -6,6 +6,7 @@ const calculateDueDate = index.calculateDueDate;
 const isWorkingDay = index.isWorkingDay;
 const timestampToDate = index.timestampToDate;
 const getUtcDay = index.getUtcDay;
+const isWorkingHour = index.isWorkingHour;
 const test = require('tape');
 
 // const WEEK_DAY_STRS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
@@ -196,6 +197,49 @@ test('getUtcDay output', function(t) {
       {
         date: new Date('Sun, 2 Oct 2016 GMT'),
         expected: 0,
+      },
+    ];
+  }
+});
+
+test('isWorkingHour output', function(t) {
+  const paramsArr = getParams();
+  R.forEach(runTests, paramsArr);
+  t.end();
+
+  function runTests(param) {
+    const timestamp = param.timestamp;
+    const dateStr = new Date(timestamp).toGMTString();
+    const expected = param.expected;
+
+    t.test(`isWorkingHour output when called with (${dateStr})`, function(pt) {
+      const actual = isWorkingHour(timestamp);
+      pt.equal(actual, expected, `isWorkingHour should return (${expected})`);
+      pt.end();
+    });
+  }
+
+  function getParams() {
+    return [
+      {
+        timestamp: getGmtTime('Mon, 26 Sep 2016 9:00:00'),
+        expected: true,
+      },
+      {
+        timestamp: getGmtTime('Mon, 26 Sep 2016 12:00:00'),
+        expected: true,
+      },
+      {
+        timestamp: getGmtTime('Mon, 26 Sep 2016 17:00:00'),
+        expected: true,
+      },
+      {
+        timestamp: getGmtTime('Mon, 26 Sep 2016 8:59:59'),
+        expected: false,
+      },
+      {
+        timestamp: getGmtTime('Mon, 26 Sep 2016 17:00:01'),
+        expected: false,
       },
     ];
   }

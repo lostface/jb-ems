@@ -14,6 +14,11 @@ const isWorkingDay = R.compose(
 );
 
 /**
+ * @param {number} timestamp a date timestamp
+ */
+const isWorkingHour = (timestamp) => {};
+
+/**
  * @param {number} date a date timestamp
  */
 const isValidSubmitDate = R.both(isWorkingDay, isWorkingHour);
@@ -23,7 +28,7 @@ module.exports = {
   getUtcDay,
   // isValidSubmitDate,
   isWorkingDay,
-  // isWorkingHour,
+  isWorkingHour,
   timestampToDate,
 };
 
@@ -51,11 +56,4 @@ function timestampToDate(timestamp) {
  */
 function getUtcDay(date) {
   return date.getUTCDay();
-}
-
-/**
- * @param {number} timestamp a date timestamp
- */
-function isWorkingHour(timestamp) {
-
 }
