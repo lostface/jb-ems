@@ -1,0 +1,11 @@
+{
+  "name": "jb-ems",
+  "version": "0.0.1",
+  "description": "Due Date Calculator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Zoltan Feher",
+  "license": "ISC"
+}
