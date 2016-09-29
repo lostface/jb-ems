@@ -30,7 +30,8 @@ const isWorkingHour = R.compose(
 );
 
 /**
- * @param {number} date a date timestamp
+ * @param {number} timestamp a date timestamp
+ * @return {boolean} true if the specified date is on a working day in a working hour otherwise false
  */
 const isValidSubmitDate = R.both(isWorkingDay, isWorkingHour);
 
@@ -39,7 +40,7 @@ module.exports = {
   getUtcDay,
   getUtcTime,
   hoursToMsecs,
-  // isValidSubmitDate,
+  isValidSubmitDate,
   isWorkingDay,
   isWorkingHour,
   minsToMsecs,

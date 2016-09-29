@@ -11,6 +11,7 @@ const getUtcTime = index.getUtcTime;
 const secsToMsecs = index.secsToMsecs;
 const minsToMsecs = index.minsToMsecs;
 const hoursToMsecs = index.hoursToMsecs;
+const isValidSubmitDate = index.isValidSubmitDate;
 const test = require('tape');
 
 // const WEEK_DAY_STRS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
@@ -283,6 +284,168 @@ test('hoursToMsecs output', function(t) {
 
   t.equal(actual, expected, `hoursToMsecs should return (${expected})`);
   t.end();
+});
+
+test('isValidSubmitDate output', function(t) {
+  const paramsArr = getParams();
+  R.forEach(runTests, paramsArr);
+  t.end();
+
+  function runTests(param) {
+    const timestamp = param.timestamp;
+    const dateStr = new Date(timestamp).toGMTString();
+    const expected = param.expected;
+
+    t.test(`isValidSubmitDate output when called with (${dateStr})`, function(pt) {
+      const actual = isValidSubmitDate(timestamp);
+      pt.equal(actual, expected, `isValidSubmitDate should return (${expected})`);
+      pt.end();
+    });
+  }
+
+  function getParams() {
+    return [
+      // week days
+      // Monday
+      {
+        timestamp: getGmtTime('Mon, 26 Sep 2016 9:00'),
+        expected: true,
+      },
+      {
+        timestamp: getGmtTime('Mon, 26 Sep 2016 12:00'),
+        expected: true,
+      },
+      {
+        timestamp: getGmtTime('Mon, 26 Sep 2016 17:00'),
+        expected: true,
+      },
+      {
+        timestamp: getGmtTime('Mon, 26 Sep 2016 8:59'),
+        expected: false,
+      },
+      {
+        timestamp: getGmtTime('Mon, 26 Sep 2016 17:01'),
+        expected: false,
+      },
+
+      // Tuesday
+      {
+        timestamp: getGmtTime('Tue, 27 Sep 2016 9:00'),
+        expected: true,
+      },
+      {
+        timestamp: getGmtTime('Tue, 27 Sep 2016 12:00'),
+        expected: true,
+      },
+      {
+        timestamp: getGmtTime('Tue, 27 Sep 2016 17:00'),
+        expected: true,
+      },
+      {
+        timestamp: getGmtTime('Tue, 27 Sep 2016 8:59'),
+        expected: false,
+      },
+      {
+        timestamp: getGmtTime('Tue, 27 Sep 2016 17:01'),
+        expected: false,
+      },
+
+      // Wednesday
+      {
+        timestamp: getGmtTime('Wed, 28 Sep 2016 9:00'),
+        expected: true,
+      },
+      {
+        timestamp: getGmtTime('Wed, 28 Sep 2016 12:00'),
+        expected: true,
+      },
+      {
+        timestamp: getGmtTime('Wed, 28 Sep 2016 17:00'),
+        expected: true,
+      },
+      {
+        timestamp: getGmtTime('Wed, 28 Sep 2016 8:59'),
+        expected: false,
+      },
+      {
+        timestamp: getGmtTime('Wed, 28 Sep 2016 17:01'),
+        expected: false,
+      },
+
+      // Thursday
+      {
+        timestamp: getGmtTime('Thu, 29 Sep 2016 9:00'),
+        expected: true,
+      },
+      {
+        timestamp: getGmtTime('Thu, 29 Sep 2016 12:00'),
+        expected: true,
+      },
+      {
+        timestamp: getGmtTime('Thu, 29 Sep 2016 17:00'),
+        expected: true,
+      },
+      {
+        timestamp: getGmtTime('Thu, 29 Sep 2016 8:59'),
+        expected: false,
+      },
+      {
+        timestamp: getGmtTime('Thu, 29 Sep 2016 17:01'),
+        expected: false,
+      },
+
+      // Friday
+      {
+        timestamp: getGmtTime('Fri, 30 Sep 2016 9:00'),
+        expected: true,
+      },
+      {
+        timestamp: getGmtTime('Fri, 30 Sep 2016 12:00'),
+        expected: true,
+      },
+      {
+        timestamp: getGmtTime('Fri, 30 Sep 2016 17:00'),
+        expected: true,
+      },
+      {
+        timestamp: getGmtTime('Fri, 30 Sep 2016 8:59'),
+        expected: false,
+      },
+      {
+        timestamp: getGmtTime('Fri, 30 Sep 2016 17:01'),
+        expected: false,
+      },
+
+      // weeken days
+      // Saturday
+      {
+        timestamp: getGmtTime('Sat, 1 Oct 2016 8:59'),
+        expected: false,
+      },
+      {
+        timestamp: getGmtTime('Sat, 1 Oct 2016 12:00'),
+        expected: false,
+      },
+      {
+        timestamp: getGmtTime('Sat, 1 Oct 2016 17:01'),
+        expected: false,
+      },
+
+      // Sunday
+      {
+        timestamp: getGmtTime('Sun, 2 Oct 2016 8:59'),
+        expected: false,
+      },
+      {
+        timestamp: getGmtTime('Sun, 2 Oct 2016 12:00'),
+        expected: false,
+      },
+      {
+        timestamp: getGmtTime('Sun, 2 Oct 2016 17:01'),
+        expected: false,
+      },
+    ];
+  }
 });
 
 function getGmtTime(dateStr) {
