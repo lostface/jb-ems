@@ -28,7 +28,7 @@ function calculateDueDate(submitTimestamp, turnaroundTime) {
  * @param {number} timestamp a date timestamp
  */
 function isWorkingDay(timestamp) {
-  const day = new Date(timestamp).getDay();
+  const day = new Date(timestamp).getUTCDay();
   // the first day is Sunday
   return day > 0 && day < 6;
 }
