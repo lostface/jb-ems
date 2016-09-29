@@ -1,6 +1,17 @@
 'use strict';
 
 const R = require('ramda');
+const __ = R.__;
+
+/**
+ * @param {number} timestamp a date timestamp
+ * @return {boolean} true if the specified date timestamp is a working day, otherwise false
+ */
+const isWorkingDay = R.compose(
+  R.both(R.gt(__, 0), R.lt(__, 6)),
+  getUtcDay,
+  timestampToDate
+);
 
 /**
  * @param {number} date a date timestamp
@@ -24,15 +35,6 @@ module.exports = {
  */
 function calculateDueDate(submitTimestamp, turnaroundTime) {
   // throw new Error('Invalid submitTimestamp parameter. Submit date should be a working day (Mon to Fri, 9:00 to 17:00)')
-}
-
-/**
- * @param {number} timestamp a date timestamp
- */
-function isWorkingDay(timestamp) {
-  const day = new Date(timestamp).getUTCDay();
-  // the first day is Sunday
-  return day > 0 && day < 6;
 }
 
 /**
