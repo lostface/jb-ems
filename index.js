@@ -3,6 +3,10 @@
 const R = require('ramda');
 const __ = R.__;
 
+const secsToMsecs = () => {};
+const minsToMsecs = () => {};
+const hoursToMsecs = () => {};
+
 /**
  * @param {number} timestamp a date timestamp
  * @return {boolean} true if the specified date timestamp is a working day, otherwise false
@@ -27,9 +31,12 @@ module.exports = {
   calculateDueDate,
   getUtcDay,
   getUtcTime,
+  hoursToMsecs,
   // isValidSubmitDate,
   isWorkingDay,
   isWorkingHour,
+  minsToMsecs,
+  secsToMsecs,
   timestampToDate,
 };
 

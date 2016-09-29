@@ -8,6 +8,9 @@ const timestampToDate = index.timestampToDate;
 const getUtcDay = index.getUtcDay;
 const isWorkingHour = index.isWorkingHour;
 const getUtcTime = index.getUtcTime;
+const secsToMsecs = index.secsToMsecs;
+const minsToMsecs = index.minsToMsecs;
+const hoursToMsecs = index.hoursToMsecs;
 const test = require('tape');
 
 // const WEEK_DAY_STRS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
@@ -246,12 +249,39 @@ test('isWorkingHour output', function(t) {
   }
 });
 
-test.only('getUtcTime output', function(t) {
+test('getUtcTime output', function(t) {
   const date = new Date('Mon, 26 Sep 2016 12:34:56:789 GMT');
   const expected = 789 + (56 * 1000) + (34 * 60 * 1000) + (12 * 60 * 60 * 1000); // 45296789
   const actual = getUtcTime(date);
 
   t.equal(actual, expected, `getUtcTime should return (${expected})`);
+  t.end();
+});
+
+test('secsToMsecs output', function(t) {
+  const secs = 56;
+  const expected = 56 * 1000; // 56000
+  const actual = secsToMsecs(secs);
+
+  t.equal(actual, expected, `secsToMsecs should return (${expected})`);
+  t.end();
+});
+
+test('minsToMsecs output', function(t) {
+  const mins = 33;
+  const expected = 33 * 60 * 1000; // 1980000
+  const actual = minsToMsecs(mins);
+
+  t.equal(actual, expected, `minsToMsecs should return (${expected})`);
+  t.end();
+});
+
+test('hoursToMsecs output', function(t) {
+  const hours = 7;
+  const expected = 7 * 60 * 60 * 1000; // 25200000
+  const actual = hoursToMsecs(hours);
+
+  t.equal(actual, expected, `hoursToMsecs should return (${expected})`);
   t.end();
 });
 
