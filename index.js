@@ -67,50 +67,188 @@ module.exports = {
  */
 function calculateDueDate(submitTimestamp, turnaroundTime) {
   if (isNotValidSubmitDate(submitTimestamp)) {
-    throw new Error('Invalid submitTimestamp parameter. Submit date should be a working day (Mon to Fri, 9:00 to 17:00)')
+    throw new Error('Invalid submitTimestamp parameter. Submit date should be a working day (Mon to Fri, 9:00 to 17:00)');
   }
 
   // TODO extract + test
   const daysToMsecs = R.compose(hoursToMsecs, R.multiply(24));
 
-  const submitDate = new Date(submitTimestamp);
-  const smTime = getUtcTime(submitDate);
   const ttWorkDays = Math.floor(turnaroundTime / WORK_HOURS_PER_DAY);
   const ttTime = hoursToMsecs(turnaroundTime % WORK_HOURS_PER_DAY);
-  let deltaDays = ttWorkDays;
-  let deltaTime = ttTime;
 
-  // try to cut one day from the days part of turnaround time
-  // a day can be cut only when the submit time is the start work hour and the time
-  // part of the turnaround time is 0
-  // for example:
-  //   Mon, 26 Sep 9:00 + 8h turn around time will result Mon 26, Sep 17:00 instead of Tue, 27 Sep 9:00
-  if (ttTime === 0 && ttWorkDays > 0 && smTime === WORK_HOUR_START_MSECS) {
-    deltaTime = hoursToMsecs(WORK_HOURS_PER_DAY);
-    deltaDays -= 1;
-  }
+  const calculate = R.compose(
+    R.when(isDueDayLeapsOutOfCurrentWeek, addWeekendDays),
+    R.when(isDueTimeOverflowsToNextWorkingDay, handleWorkTimeOverflow),
+    R.when(canUsePrevDayEndInsteadNextDayStart, usePrevDayEndInsteadNextDayStart)
+  );
 
-  // update delta days/time when due time overflows to next working day
-  if (smTime + deltaTime > WORK_HOUR_END_MSECS) {
-    deltaDays += 1;
-    const overflowTime = deltaTime - (WORK_HOUR_END_MSECS - smTime);
-    const dueTime = WORK_HOUR_START_MSECS + overflowTime;
-    deltaTime = dueTime - smTime;
-  }
+  const result = calculate({
+    submitTimestamp,
+    turnaroundTime,
+    deltaDays: ttWorkDays,
+    deltaTime: ttTime,
+  });
 
-  // update delta days if due date leaps out of current work week
-  const smDayOfWeek = getUtcDay(submitDate);
-  const dayOfWeeks = smDayOfWeek + deltaDays;
-
-  if (dayOfWeeks > DAY_OF_WEEK_FRIDAY) {
-    const weekCount = Math.floor((dayOfWeeks - DAY_OF_WEEK_SATURDAY) / NUM_WORK_DAYS) + 1;
-    deltaDays += weekCount * 2;
-  }
-
+  const deltaDays = result.deltaDays;
+  const deltaTime = result.deltaTime;
   const deltaTimestamp = deltaTime + daysToMsecs(deltaDays);
   const dueDate = new Date(submitTimestamp + deltaTimestamp);
 
   return dueDate.getTime();
+
+  /**
+   * The previous day end can be used instead of the next day start only when
+   * the submit time is the start work hour and the time part of the turnaround
+   * time is 0
+   *
+   * for example:
+   *   Mon, 26 Sep 9:00 + 8h turn around time will result Mon 26, Sep 17:00 instead of Tue, 27 Sep 9:00
+   *
+   * @param {Object} args
+   * @param {number} args.submitTimestamp
+   * @param {number} args.turnaroundTime
+   * @param {number} args.deltaDays
+   * @param {number} args.deltaTime
+   * @return {boolean} true if one working day can be moved to delta time otherwise false
+   */
+  function canUsePrevDayEndInsteadNextDayStart(args) {
+    const submitTimestamp = args.submitTimestamp;
+    const submitDate = new Date(submitTimestamp);
+    const smTime = getUtcTime(submitDate);
+    const turnaroundTime = args.turnaroundTime;
+    const ttWorkDays = Math.floor(turnaroundTime / WORK_HOURS_PER_DAY);
+    const ttTime = hoursToMsecs(turnaroundTime % WORK_HOURS_PER_DAY);
+
+    return ttTime === 0 && ttWorkDays > 0 && smTime === WORK_HOUR_START_MSECS;
+  }
+
+  /**
+   * Use the previous working day end instead of the next working day start
+   *
+   * for example:
+   *   Mon, 26 Sep 9:00 + 8h turn around time will result Mon 26, Sep 17:00 instead of Tue, 27 Sep 9:00
+   *
+   * @param {Object} args
+   * @param {number} args.submitTimestamp
+   * @param {number} args.turnaroundTime
+   * @param {number} args.deltaDays
+   * @param {number} args.deltaTime
+   * @return {Object} updated args object
+   */
+  function usePrevDayEndInsteadNextDayStart(args) {
+    const transformation = {
+      deltaDays: R.dec,
+      deltaTime: () => hoursToMsecs(WORK_HOURS_PER_DAY),
+    };
+
+    return R.evolve(transformation, args);
+  }
+
+  /**
+   * Checks if due time overflows to next working day
+   *
+   * for example:
+   *   Mon 26, Sep 15:00 + 6h turnaround time overflows by 4h to next working day
+   *
+   * @param {Object} args
+   * @param {number} args.submitTimestamp
+   * @param {number} args.turnaroundTime
+   * @param {number} args.deltaDays
+   * @param {number} args.deltaTime
+   * @return {boolean} true if due time overflows to next working day
+   */
+  function isDueTimeOverflowsToNextWorkingDay(args) {
+    const submitTimestamp = args.submitTimestamp;
+    const submitDate = new Date(submitTimestamp);
+    const smTime = getUtcTime(submitDate);
+    const deltaTime = args.deltaTime;
+    const dueTime = smTime + deltaTime;
+
+    return dueTime > WORK_HOUR_END_MSECS;
+  }
+
+  /**
+   * Handles work time overflow
+   *
+   * for example:
+   *   Mon 26, Sep 15:00 + 6h turnaround time overflows by 4h to next working day
+   *
+   * @param {Object} args
+   * @param {number} args.submitTimestamp
+   * @param {number} args.turnaroundTime
+   * @param {number} args.deltaDays
+   * @param {number} args.deltaTime
+   * @return {Object} updated args object
+   */
+  function handleWorkTimeOverflow(args) {
+    const submitTimestamp = args.submitTimestamp;
+    const submitDate = new Date(submitTimestamp);
+    const smTime = getUtcTime(submitDate);
+
+    const transformation = {
+      deltaDays: R.inc,
+      deltaTime: deltaTime => {
+        const overflowTime = deltaTime - (WORK_HOUR_END_MSECS - smTime);
+        const dueTime = WORK_HOUR_START_MSECS + overflowTime;
+        return dueTime - smTime;
+      },
+    };
+
+    return R.evolve(transformation, args);
+  }
+
+  /**
+   * Checks if due day leaps out of week of the submit date
+   *
+   * for example:
+   *   Fri 30, Sep 16:00 + 4h turnaround time leaps into next week
+   *
+   * @param {Object} args
+   * @param {number} args.submitTimestamp
+   * @param {number} args.turnaroundTime
+   * @param {number} args.deltaDays
+   * @param {number} args.deltaTime
+   * @return {boolean} true if due day leaps out of the week of submit date otherwise false
+   */
+  function isDueDayLeapsOutOfCurrentWeek(args) {
+    const submitTimestamp = args.submitTimestamp;
+    const submitDate = new Date(submitTimestamp);
+    const smDayOfWeek = getUtcDay(submitDate);
+    const deltaDays = args.deltaDays;
+    const dayOfWeeks = smDayOfWeek + deltaDays;
+
+    return dayOfWeeks > DAY_OF_WEEK_FRIDAY;
+  }
+
+  /**
+   * Add the necessary number of weekend days to delta days
+   *
+   * for example:
+   *   Fri 30, Sep 16:00 + 4h turnaround time leaps into next week so 2 weekend days correction will be added
+   *
+   * @param {Object} args
+   * @param {number} args.submitTimestamp
+   * @param {number} args.turnaroundTime
+   * @param {number} args.deltaDays
+   * @param {number} args.deltaTime
+   * @return {Object} updated args object
+   */
+  function addWeekendDays(args) {
+    const submitTimestamp = args.submitTimestamp;
+    const submitDate = new Date(submitTimestamp);
+    const smDayOfWeek = getUtcDay(submitDate);
+    const deltaDays = args.deltaDays;
+    const dayOfWeeks = smDayOfWeek + deltaDays;
+
+    const transformation = {
+      deltaDays: deltaDays => {
+        const weekCount = Math.floor((dayOfWeeks - DAY_OF_WEEK_SATURDAY) / NUM_WORK_DAYS) + 1;
+        return deltaDays + weekCount * 2;
+      },
+    };
+
+    return R.evolve(transformation, args);
+  }
 }
 
 /**
