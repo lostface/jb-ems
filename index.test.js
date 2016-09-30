@@ -96,6 +96,203 @@ test('calculateDueDate called with invalid submit dates', function(t) {
   }
 });
 
+test('calculateDueDate output', function(t) {
+  const paramsArr = getParams();
+  R.forEach(runTests, paramsArr);
+  t.end();
+
+  function runTests(param) {
+    const id = param.id;
+    const submitTimestamp = param.timestamp;
+    const dateStr = new Date(submitTimestamp).toGMTString();
+    const turnaroundTime = param.turnaroundTime;
+    const expected = param.expected;
+
+    t.test(`calculateDueDate output when called with (${dateStr}, ${turnaroundTime}) (case: ${id})`, function(pt) {
+      const result = calculateDueDate(submitTimestamp, turnaroundTime);
+      const actual = new Date(result).toGMTString();
+      pt.equal(actual, expected, `calculateDueDate should return (${expected})`);
+      pt.end();
+    });
+  }
+
+  function getParams() {
+    return [
+      // Monday: same day, next day, next week
+      {
+        id: 1,
+        timestamp: getGmtTime('Mon, 26 Sep 2016 09:00'),
+        turnaroundTime: 4,
+        expected: 'Mon, 26 Sep 2016 13:00:00 GMT',
+      },
+      {
+        id: 2,
+        timestamp: getGmtTime('Mon, 26 Sep 2016 12:00'),
+        turnaroundTime: 12,
+        expected: 'Tue, 27 Sep 2016 16:00:00 GMT',
+      },
+      {
+        id: 3,
+        timestamp: getGmtTime('Mon, 26 Sep 2016 17:00'),
+        turnaroundTime: 40,
+        expected: 'Mon, 03 Oct 2016 17:00:00 GMT',
+      },
+
+      // Tuesday: same day, next day, next week
+      {
+        id: 4,
+        timestamp: getGmtTime('Tue, 27 Sep 2016 09:00'),
+        turnaroundTime: 8,
+        expected: 'Tue, 27 Sep 2016 17:00:00 GMT',
+        // expected: 'Wed, 28 Sep 2016 09:00:00 GMT',
+      },
+      {
+        id: 5,
+        timestamp: getGmtTime('Tue, 27 Sep 2016 12:00'),
+        turnaroundTime: 8,
+        expected: 'Wed, 28 Sep 2016 12:00:00 GMT',
+      },
+      {
+        id: 6,
+        timestamp: getGmtTime('Tue, 27 Sep 2016 17:00'),
+        turnaroundTime: 33,
+        expected: 'Tue, 04 Oct 2016 10:00:00 GMT',
+      },
+
+      // Wednesday: same day, next day, next week
+      {
+        id: 7,
+        timestamp: getGmtTime('Wed, 28 Sep 2016 09:00'),
+        turnaroundTime: 2,
+        expected: 'Wed, 28 Sep 2016 11:00:00 GMT',
+      },
+      {
+        id: 8,
+        timestamp: getGmtTime('Wed, 28 Sep 2016 12:00'),
+        turnaroundTime: 13,
+        expected: 'Thu, 29 Sep 2016 17:00:00 GMT',
+      },
+      {
+        id: 9,
+        timestamp: getGmtTime('Wed, 28 Sep 2016 17:00'),
+        turnaroundTime: 2,
+        expected: 'Thu, 29 Sep 2016 11:00:00 GMT',
+      },
+
+      // Thursday: same day, next day, next week
+      {
+        id: 10,
+        timestamp: getGmtTime('Thu, 29 Sep 2016 09:00'),
+        turnaroundTime: 6,
+        expected: 'Thu, 29 Sep 2016 15:00:00 GMT',
+      },
+      {
+        id: 11,
+        timestamp: getGmtTime('Thu, 29 Sep 2016 12:00'),
+        turnaroundTime: 5,
+        expected: 'Thu, 29 Sep 2016 17:00:00 GMT',
+      },
+      {
+        id: 12,
+        timestamp: getGmtTime('Thu, 29 Sep 2016 17:00'),
+        turnaroundTime: 16,
+        expected: 'Mon, 03 Oct 2016 17:00:00 GMT',
+      },
+
+      // Friday: same day, next day, next week
+      {
+        id: 13,
+        timestamp: getGmtTime('Fri, 30 Sep 2016 09:00'),
+        turnaroundTime: 3,
+        expected: 'Fri, 30 Sep 2016 12:00:00 GMT',
+      },
+      {
+        id: 14,
+        timestamp: getGmtTime('Fri, 30 Sep 2016 12:00'),
+        turnaroundTime: 9,
+        expected: 'Mon, 03 Oct 2016 13:00:00 GMT',
+      },
+      {
+        id: 15,
+        timestamp: getGmtTime('Fri, 30 Sep 2016 17:00'),
+        turnaroundTime: 8,
+        expected: 'Mon, 03 Oct 2016 17:00:00 GMT',
+      },
+
+      // Due date in 2 weeks
+      {
+        id: 16,
+        timestamp: getGmtTime('Wed, 28 Sep 2016 09:00'),
+        turnaroundTime: 87,
+        expected: 'Wed, 12 Oct 2016 16:00:00 GMT',
+      },
+      // Due date in 4 weeks
+      {
+        id: 17,
+        timestamp: getGmtTime('Wed, 28 Sep 2016 09:00'),
+        turnaroundTime: 163,
+        expected: 'Wed, 26 Oct 2016 12:00:00 GMT',
+      },
+
+      // Due date is same day end instead of next day start cases
+      {
+        id: 18,
+        timestamp: getGmtTime('Mon, 26 Sep 2016 09:00'),
+        turnaroundTime: 8,
+        expected: 'Mon, 26 Sep 2016 17:00:00 GMT',
+      },
+      {
+        id: 19,
+        timestamp: getGmtTime('Mon, 26 Sep 2016 09:00'),
+        turnaroundTime: 16,
+        expected: 'Tue, 27 Sep 2016 17:00:00 GMT',
+      },
+      {
+        id: 20,
+        timestamp: getGmtTime('Mon, 26 Sep 2016 09:00'),
+        turnaroundTime: 24,
+        expected: 'Wed, 28 Sep 2016 17:00:00 GMT',
+      },
+      {
+        id: 21,
+        timestamp: getGmtTime('Mon, 26 Sep 2016 09:00'),
+        turnaroundTime: 9,
+        expected: 'Tue, 27 Sep 2016 10:00:00 GMT',
+      },
+      {
+        id: 22,
+        timestamp: getGmtTime('Mon, 26 Sep 2016 09:00'),
+        turnaroundTime: 17,
+        expected: 'Wed, 28 Sep 2016 10:00:00 GMT',
+      },
+      {
+        id: 23,
+        timestamp: getGmtTime('Mon, 26 Sep 2016 09:00'),
+        turnaroundTime: 25,
+        expected: 'Thu, 29 Sep 2016 10:00:00 GMT',
+      },
+      {
+        id: 24,
+        timestamp: getGmtTime('Mon, 26 Sep 2016 12:00'),
+        turnaroundTime: 5,
+        expected: 'Mon, 26 Sep 2016 17:00:00 GMT',
+      },
+      {
+        id: 25,
+        timestamp: getGmtTime('Mon, 26 Sep 2016 12:00'),
+        turnaroundTime: 13,
+        expected: 'Tue, 27 Sep 2016 17:00:00 GMT',
+      },
+      {
+        id: 26,
+        timestamp: getGmtTime('Mon, 26 Sep 2016 12:00'),
+        turnaroundTime: 21,
+        expected: 'Wed, 28 Sep 2016 17:00:00 GMT',
+      },
+    ];
+  }
+});
+
 test('isWorkingDay output', function(t) {
   const paramsArr = getParams();
   R.forEach(runTests, paramsArr);
