@@ -2,11 +2,11 @@
 
 const test = require('tape');
 const R = require('ramda');
-const index = require('./index');
-const calculateDueDate = index.calculateDueDate;
-const isWorkingDay = index.isWorkingDay;
-const isWorkingHour = index.isWorkingHour;
-const isValidSubmitDate = index.isValidSubmitDate;
+const mod = require('./calculate-due-date');
+const calculateDueDate = mod.calculateDueDate;
+const isWorkingDay = mod.isWorkingDay;
+const isWorkingHour = mod.isWorkingHour;
+const isValidSubmitDate = mod.isValidSubmitDate;
 
 const DUMMY_TURNAROUND_TIME = 8;
 
