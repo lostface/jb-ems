@@ -6,6 +6,7 @@ const __ = R.__;
 const secsToMsecs = R.multiply(1000);
 const minsToMsecs = R.compose(secsToMsecs, R.multiply(60));
 const hoursToMsecs = R.compose(minsToMsecs, R.multiply(60));
+const daysToMsecs = () => {};
 
 const DAY_OF_WEEK_FRIDAY = 5;
 const DAY_OF_WEEK_SATURDAY = 6;
@@ -47,6 +48,7 @@ const isNotValidSubmitDate = R.complement(isValidSubmitDate);
 
 module.exports = {
   calculateDueDate,
+  daysToMsecs,
   getUtcDay,
   getUtcTime,
   hoursToMsecs,

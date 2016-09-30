@@ -12,6 +12,7 @@ const secsToMsecs = index.secsToMsecs;
 const minsToMsecs = index.minsToMsecs;
 const hoursToMsecs = index.hoursToMsecs;
 const isValidSubmitDate = index.isValidSubmitDate;
+const daysToMsecs = index.daysToMsecs;
 const test = require('tape');
 
 // const WEEK_DAY_STRS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
@@ -643,6 +644,15 @@ test('isValidSubmitDate output', function(t) {
       },
     ];
   }
+});
+
+test('daysToMsecs output', function(t) {
+  const days = 7;
+  const expected = 7 * 24 * 60 * 60 * 1000; // 604800000
+  const actual = daysToMsecs(days);
+
+  t.equal(actual, expected, `daysToMsecs should return (${expected})`);
+  t.end();
 });
 
 function getGmtTime(dateStr) {
