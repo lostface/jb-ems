@@ -12,6 +12,7 @@ const daysToMsecs = common.daysToMsecs;
 
 const DAY_OF_WEEK_FRIDAY = constants.DAY_OF_WEEK_FRIDAY;
 const DAY_OF_WEEK_SATURDAY = constants.DAY_OF_WEEK_SATURDAY;
+const DAY_OF_WEEK_SUNDAY = constants.DAY_OF_WEEK_SUNDAY;
 const NUM_WORK_DAYS = constants.NUM_WORK_DAYS;
 const WORK_HOUR_START = constants.WORK_HOUR_START;
 const WORK_HOUR_END = constants.WORK_HOUR_END;
@@ -24,7 +25,10 @@ const WORK_HOUR_END_MSECS = hoursToMsecs(WORK_HOUR_END);
  * @return {boolean} true if the specified date timestamp is a working day, otherwise false
  */
 const isWorkingDay = R.compose(
-  R.both(R.gt(__, 0), R.lt(__, 6)),
+  R.both(
+    R.gt(__, DAY_OF_WEEK_SUNDAY),
+    R.lt(__, DAY_OF_WEEK_SATURDAY)
+  ),
   getUtcDay,
   timestampToDate
 );
@@ -33,7 +37,10 @@ const isWorkingDay = R.compose(
  * @param {number} timestamp a date timestamp
  */
 const isWorkingHour = R.compose(
-  R.both(R.gte(__, WORK_HOUR_START_MSECS), R.lte(__, WORK_HOUR_END_MSECS)),
+  R.both(
+    R.gte(__, WORK_HOUR_START_MSECS),
+    R.lte(__, WORK_HOUR_END_MSECS)
+  ),
   getUtcTime,
   timestampToDate
 );
