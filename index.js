@@ -3,9 +3,28 @@
 const R = require('ramda');
 const __ = R.__;
 
+/**
+ * @param {number} secs seconds
+ * @return {number} secs converted to milliseconds
+ */
 const secsToMsecs = R.multiply(1000);
+
+/**
+ * @param {number} mins minutes
+ * @return {number} mins converted to milliseconds
+ */
 const minsToMsecs = R.compose(secsToMsecs, R.multiply(60));
+
+/**
+ * @param {number} hours
+ * @return {number} hours converted to milliseconds
+ */
 const hoursToMsecs = R.compose(minsToMsecs, R.multiply(60));
+
+/**
+ * @param {number} days
+ * @return {number} days converted to milliseconds
+ */
 const daysToMsecs = R.compose(hoursToMsecs, R.multiply(24));
 
 const DAY_OF_WEEK_FRIDAY = 5;
