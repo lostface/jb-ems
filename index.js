@@ -6,7 +6,7 @@ const __ = R.__;
 const secsToMsecs = R.multiply(1000);
 const minsToMsecs = R.compose(secsToMsecs, R.multiply(60));
 const hoursToMsecs = R.compose(minsToMsecs, R.multiply(60));
-const daysToMsecs = () => {};
+const daysToMsecs = R.compose(hoursToMsecs, R.multiply(24));
 
 const DAY_OF_WEEK_FRIDAY = 5;
 const DAY_OF_WEEK_SATURDAY = 6;
@@ -71,9 +71,6 @@ function calculateDueDate(submitTimestamp, turnaroundTime) {
   if (isNotValidSubmitDate(submitTimestamp)) {
     throw new Error('Invalid submitTimestamp parameter. Submit date should be a working day (Mon to Fri, 9:00 to 17:00)');
   }
-
-  // TODO extract + test
-  const daysToMsecs = R.compose(hoursToMsecs, R.multiply(24));
 
   const ttWorkDays = Math.floor(turnaroundTime / WORK_HOURS_PER_DAY);
   const ttTime = hoursToMsecs(turnaroundTime % WORK_HOURS_PER_DAY);
