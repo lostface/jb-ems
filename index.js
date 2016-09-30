@@ -2,37 +2,24 @@
 
 const R = require('ramda');
 const __ = R.__;
+const constants = require('./src/constants');
+const common = require('./src/common');
+const hoursToMsecs = common.hoursToMsecs;
+const getUtcDay = common.getUtcDay;
+const timestampToDate = common.timestampToDate;
+const getUtcTime = common.getUtcTime;
+const daysToMsecs = common.daysToMsecs;
 
-/**
- * @param {number} secs seconds
- * @return {number} secs converted to milliseconds
- */
-const secsToMsecs = R.multiply(1000);
+const DAY_OF_WEEK_FRIDAY = constants.DAY_OF_WEEK_FRIDAY;
+const DAY_OF_WEEK_SATURDAY = constants.DAY_OF_WEEK_SATURDAY;
+const NUM_WORK_DAYS = constants.NUM_WORK_DAYS;
+const WORK_HOUR_START = constants.WORK_HOUR_START;
+const WORK_HOUR_END = constants.WORK_HOUR_END;
+const WORK_HOURS_PER_DAY = constants.WORK_HOURS_PER_DAY;
 
-/**
- * @param {number} mins minutes
- * @return {number} mins converted to milliseconds
- */
-const minsToMsecs = R.compose(secsToMsecs, R.multiply(60));
+const WORK_HOUR_START_MSECS = hoursToMsecs(WORK_HOUR_START);
+const WORK_HOUR_END_MSECS = hoursToMsecs(WORK_HOUR_END);
 
-/**
- * @param {number} hours
- * @return {number} hours converted to milliseconds
- */
-const hoursToMsecs = R.compose(minsToMsecs, R.multiply(60));
-
-/**
- * @param {number} days
- * @return {number} days converted to milliseconds
- */
-const daysToMsecs = R.compose(hoursToMsecs, R.multiply(24));
-
-const DAY_OF_WEEK_FRIDAY = 5;
-const DAY_OF_WEEK_SATURDAY = 6;
-const NUM_WORK_DAYS = 5;
-const WORK_HOUR_START_MSECS = hoursToMsecs(9);
-const WORK_HOUR_END_MSECS = hoursToMsecs(17);
-const WORK_HOURS_PER_DAY = 8;
 
 /**
  * @param {number} timestamp a date timestamp
@@ -67,17 +54,10 @@ const isNotValidSubmitDate = R.complement(isValidSubmitDate);
 
 module.exports = {
   calculateDueDate,
-  daysToMsecs,
-  getUtcDay,
-  getUtcTime,
-  hoursToMsecs,
   isNotValidSubmitDate,
   isValidSubmitDate,
   isWorkingDay,
   isWorkingHour,
-  minsToMsecs,
-  secsToMsecs,
-  timestampToDate,
 };
 
 /**
@@ -267,32 +247,4 @@ function calculateDueDate(submitTimestamp, turnaroundTime) {
 
     return R.evolve(transformation, args);
   }
-}
-
-/**
- * @param {number} timestamp a date timestamp
- * @return {Date} new date obj init with the specified timestamp
- */
-function timestampToDate(timestamp) {
-  return new Date(timestamp);
-}
-
-/**
- * @date {Date} date
- * @return {number} the day of the week of the specified date
- */
-function getUtcDay(date) {
-  return date.getUTCDay();
-}
-
-/**
- * @date {Date} date
- * @return {number} the time part of the specified date in milliseconds
- */
-function getUtcTime(date) {
-  const hours = date.getUTCHours();
-  const minutes = date.getUTCMinutes();
-  const seconds = date.getUTCSeconds();
-  const msecs = date.getUTCMilliseconds();
-  return msecs + secsToMsecs(seconds) + minsToMsecs(minutes) + hoursToMsecs(hours);
 }
