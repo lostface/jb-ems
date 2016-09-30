@@ -4,7 +4,7 @@ Issue the following once
 ```
 npm install
 ```
-Next rn the tests via
+Next run the tests via
 ```
 npm test
 ```
