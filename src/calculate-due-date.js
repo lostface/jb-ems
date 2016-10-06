@@ -77,13 +77,19 @@ function calculateDueDate(submitTimestamp, turnaroundTime) {
 
   const calculate = R.compose(
     addWeekendDays,
-    R.when(isDueTimeOverflowsToNextWorkingDay, handleDueTimeOverflow),
-    R.when(canUsePrevDayEndInsteadNextDayStart, usePrevDayEndInsteadNextDayStart)
+    R.when(isDueTimeOverflowsToNextWorkingDay, handleDueTimeOverflow)
+    // R.when(canUsePrevDayEndInsteadNextDayStart, usePrevDayEndInsteadNextDayStart)
   );
 
   const submitDate = new Date(submitTimestamp);
-  const ttWorkDays = Math.floor(turnaroundTime / WORK_HOURS_PER_DAY);
-  const ttTime = hoursToMsecs(turnaroundTime % WORK_HOURS_PER_DAY);
+  let ttWorkDays = Math.floor(turnaroundTime / WORK_HOURS_PER_DAY);
+  let ttTime = hoursToMsecs(turnaroundTime % WORK_HOURS_PER_DAY);
+
+  // TODO extract, name ...
+  if (ttWorkDays > 0 && ttTime == 0) {
+    ttWorkDays -= 1;
+    ttTime += hoursToMsecs(8);
+  }
 
   const result = calculate({
     smTime: getUtcTime(submitDate),
