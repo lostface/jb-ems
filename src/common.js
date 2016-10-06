@@ -27,6 +27,11 @@ const hoursToMsecs = R.compose(minsToMsecs, R.multiply(60));
 const daysToMsecs = R.compose(hoursToMsecs, R.multiply(24));
 
 module.exports = {
+  addMsecsToTimestamp,
+  addSecsToTimestamp,
+  addMinutesToTimestamp,
+  addHoursToTimestamp,
+  addDaysToTimestamp,
   daysToMsecs,
   getUtcDay,
   getUtcTime,
@@ -35,6 +40,26 @@ module.exports = {
   secsToMsecs,
   timestampToDate,
 };
+
+function addMsecsToTimestamp(msecs, timestamp) {
+  // == R.add
+}
+
+function addSecsToTimestamp(secs, timestamp) {
+
+}
+
+function addMinutesToTimestamp(secs, timestamp) {
+
+}
+
+function addHoursToTimestamp(secs, timestamp) {
+
+}
+
+function addDaysToTimestamp(secs, timestamp) {
+
+}
 
 /**
  * @param {number} timestamp a date timestamp

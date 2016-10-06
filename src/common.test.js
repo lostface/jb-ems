@@ -10,6 +10,10 @@ const secsToMsecs = common.secsToMsecs;
 const minsToMsecs = common.minsToMsecs;
 const hoursToMsecs = common.hoursToMsecs;
 const daysToMsecs = common.daysToMsecs;
+const addSecsToTimestamp = common.addSecsToTimestamp;
+const addMinutesToTimestamp = common.addMinutesToTimestamp;
+const addHoursToTimestamp = common.addHoursToTimestamp;
+const addDaysToTimestamp = common.addDaysToTimestamp;
 
 test('timestampToDate output', function(t) {
   const timestamp = getGmtTime('Mon, 26 Sep 2016 12:34:56');
@@ -113,6 +117,46 @@ test('daysToMsecs output', function(t) {
   const actual = daysToMsecs(days);
 
   t.equal(actual, expected, `daysToMsecs should return (${expected})`);
+  t.end();
+});
+
+test('addSecsToTimestamp output', function(t) {
+  const secs = 56;
+  const timestamp = 0;
+  const expected = 56 * 1000; // 56000
+  const actual = addSecsToTimestamp(secs, timestamp);
+
+  t.equal(actual, expected, `addSecsToTimestamp should return (${expected})`);
+  t.end();
+});
+
+test('addMinutesToTimestamp output', function(t) {
+  const mins = 33;
+  const timestamp = 0;
+  const expected = 33 * 60 * 1000; // 1980000
+  const actual = addMinutesToTimestamp(mins, timestamp);
+
+  t.equal(actual, expected, `addMinutesToTimestamp should return (${expected})`);
+  t.end();
+});
+
+test('addHoursToTimestamp output', function(t) {
+  const hours = 7;
+  const timestamp = 0;
+  const expected = 7 * 60 * 60 * 1000; // 25200000
+  const actual = addHoursToTimestamp(hours, timestamp);
+
+  t.equal(actual, expected, `addHoursToTimestamp should return (${expected})`);
+  t.end();
+});
+
+test('addDaysToTimestamp output', function(t) {
+  const days = 7;
+  const timestamp = 0;
+  const expected = 7 * 24 * 60 * 60 * 1000; // 604800000
+  const actual = addDaysToTimestamp(days, timestamp);
+
+  t.equal(actual, expected, `addDaysToTimestamp should return (${expected})`);
   t.end();
 });
 
