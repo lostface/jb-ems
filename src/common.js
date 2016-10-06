@@ -27,43 +27,32 @@ const hoursToMsecs = R.compose(minsToMsecs, R.multiply(60));
 const daysToMsecs = R.compose(hoursToMsecs, R.multiply(24));
 
 /**
- * @param {Funciton} f func to apply on a
- * @param {Funciton} g func to apply on b
- * @param {number} a a number
- * @param {number} b a number
- * @return {number} f(a) + g(b)
- */
-const addf = R.curry(
-  (f, g, a, b) => f(a) + g(b)
-);
-
-/**
  * @param {number} secs seconds
  * @param {number} msecs milliseseconds
  * @return {number} msecs incremented with the specified seconds
  */
-const addSecsToMsecs = addf(secsToMsecs, R.identity);
+const addSecsToMsecs = R.useWith(R.add, [secsToMsecs]);
 
 /**
  * @param {number} mins minutes
  * @param {number} msecs milliseseconds
  * @return {number} msecs incremented with the specified minutes
  */
-const addMinsToMsecs = addf(minsToMsecs, R.identity);
+const addMinsToMsecs = R.useWith(R.add, [minsToMsecs]);
 
 /**
  * @param {number} hours hours
  * @param {number} msecs milliseseconds
  * @return {number} msecs incremented with the specified hours
  */
-const addHoursToMsecs = addf(hoursToMsecs, R.identity);
+const addHoursToMsecs = R.useWith(R.add, [hoursToMsecs]);
 
 /**
  * @param {number} days days
  * @param {number} msecs milliseseconds
  * @return {number} msecs incremented with the specified days
  */
-const addDaysToMsecs = addf(daysToMsecs, R.identity);
+const addDaysToMsecs = R.useWith(R.add, [daysToMsecs]);
 
 module.exports = {
   addSecsToMsecs,
