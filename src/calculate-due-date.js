@@ -10,7 +10,6 @@ const timestampToDate = common.timestampToDate;
 const getUtcTime = common.getUtcTime;
 const daysToMsecs = common.daysToMsecs;
 
-const DAY_OF_WEEK_FRIDAY = constants.DAY_OF_WEEK_FRIDAY;
 const DAY_OF_WEEK_SATURDAY = constants.DAY_OF_WEEK_SATURDAY;
 const DAY_OF_WEEK_SUNDAY = constants.DAY_OF_WEEK_SUNDAY;
 const NUM_WORK_DAYS = constants.NUM_WORK_DAYS;
@@ -77,7 +76,7 @@ function calculateDueDate(submitTimestamp, turnaroundTime) {
   }
 
   const calculate = R.compose(
-    R.when(isDueDayLeapsOutOfCurrentWeek, addWeekendDays),
+    addWeekendDays,
     R.when(isDueTimeOverflowsToNextWorkingDay, handleDueTimeOverflow),
     R.when(canUsePrevDayEndInsteadNextDayStart, usePrevDayEndInsteadNextDayStart)
   );
@@ -98,9 +97,8 @@ function calculateDueDate(submitTimestamp, turnaroundTime) {
   const deltaDays = result.deltaDays;
   const deltaTime = result.deltaTime;
   const deltaTimestamp = deltaTime + daysToMsecs(deltaDays);
-  const dueDate = new Date(submitTimestamp + deltaTimestamp);
 
-  return dueDate.getTime();
+  return submitTimestamp + deltaTimestamp;
 }
 
 /**
@@ -203,29 +201,6 @@ function handleDueTimeOverflow(args) {
   };
 
   return R.evolve(transformation, args);
-}
-
-/**
- * Checks if due day leaps out of week of the submit date
- *
- * for example:
- *   Fri 30, Sep 16:00 + 4h turnaround time leaps into next week
- *
- * @param {Object} args
- * @param {number} args.smTime time part in msecs of submit date
- * @param {number} args.smDayOfWeek day of week of submit date
- * @param {number} args.ttWorkDays working days part of turnaround time
- * @param {number} args.ttTime working time part of turnaround time
- * @param {number} args.deltaDays delta days to due date
- * @param {number} args.deltaTime delta time to due date
- * @return {boolean} true if due day leaps out of the week of submit date otherwise false
- */
-function isDueDayLeapsOutOfCurrentWeek(args) {
-  const smDayOfWeek = args.smDayOfWeek;
-  const deltaDays = args.deltaDays;
-  const dayOfWeeks = smDayOfWeek + deltaDays;
-
-  return dayOfWeeks > DAY_OF_WEEK_FRIDAY;
 }
 
 /**
