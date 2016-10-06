@@ -26,6 +26,45 @@ const hoursToMsecs = R.compose(minsToMsecs, R.multiply(60));
  */
 const daysToMsecs = R.compose(hoursToMsecs, R.multiply(24));
 
+/**
+ * @param {Funciton} f func to apply on a
+ * @param {Funciton} g func to apply on b
+ * @param {number} a a number
+ * @param {number} b a number
+ * @return {number} f(a) + g(b)
+ */
+const addf = R.curry(
+  (f, g, a, b) => f(a) + g(b)
+);
+
+/**
+ * @param {number} secs seconds
+ * @param {number} msecs milliseseconds
+ * @return {number} msecs incremented with the specified seconds
+ */
+const addSecsToMsecs = addf(secsToMsecs, R.identity);
+
+/**
+ * @param {number} mins minutes
+ * @param {number} msecs milliseseconds
+ * @return {number} msecs incremented with the specified minutes
+ */
+const addMinutesToMsecs = addf(minsToMsecs, R.identity);
+
+/**
+ * @param {number} hours hours
+ * @param {number} msecs milliseseconds
+ * @return {number} msecs incremented with the specified hours
+ */
+const addHoursToMsecs = addf(hoursToMsecs, R.identity);
+
+/**
+ * @param {number} days days
+ * @param {number} msecs milliseseconds
+ * @return {number} msecs incremented with the specified days
+ */
+const addDaysToMsecs = addf(daysToMsecs, R.identity);
+
 module.exports = {
   addSecsToMsecs,
   addMinutesToMsecs,
@@ -39,42 +78,6 @@ module.exports = {
   secsToMsecs,
   timestampToDate,
 };
-
-/**
- * @param {number} secs seconds
- * @param {number} timestamp a date timestamp
- * @return {number} timestamp incremented with the specified seconds
- */
-function addSecsToMsecs(secs, timestamp) {
-  return secsToMsecs(secs) + timestamp;
-}
-
-/**
- * @param {number} mins minutes
- * @param {number} timestamp a date timestamp
- * @return {number} timestamp incremented with the specified minutes
- */
-function addMinutesToMsecs(mins, timestamp) {
-  return minsToMsecs(mins) + timestamp;
-}
-
-/**
- * @param {number} hours hours
- * @param {number} timestamp a date timestamp
- * @return {number} timestamp incremented with the specified hours
- */
-function addHoursToMsecs(hours, timestamp) {
-  return hoursToMsecs(hours) + timestamp;
-}
-
-/**
- * @param {number} days days
- * @param {number} timestamp a date timestamp
- * @return {number} timestamp incremented with the specified days
- */
-function addDaysToMsecs(days, timestamp) {
-  return daysToMsecs(days) + timestamp;
-}
 
 /**
  * @param {number} timestamp a date timestamp
