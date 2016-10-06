@@ -27,10 +27,10 @@ const hoursToMsecs = R.compose(minsToMsecs, R.multiply(60));
 const daysToMsecs = R.compose(hoursToMsecs, R.multiply(24));
 
 module.exports = {
-  addSecsToTimestamp,
-  addMinutesToTimestamp,
-  addHoursToTimestamp,
-  addDaysToTimestamp,
+  addSecsToMsecs,
+  addMinutesToMsecs,
+  addHoursToMsecs,
+  addDaysToMsecs,
   daysToMsecs,
   getUtcDay,
   getUtcTime,
@@ -45,7 +45,7 @@ module.exports = {
  * @param {number} timestamp a date timestamp
  * @return {number} timestamp incremented with the specified seconds
  */
-function addSecsToTimestamp(secs, timestamp) {
+function addSecsToMsecs(secs, timestamp) {
   return secsToMsecs(secs) + timestamp;
 }
 
@@ -54,7 +54,7 @@ function addSecsToTimestamp(secs, timestamp) {
  * @param {number} timestamp a date timestamp
  * @return {number} timestamp incremented with the specified minutes
  */
-function addMinutesToTimestamp(mins, timestamp) {
+function addMinutesToMsecs(mins, timestamp) {
   return minsToMsecs(mins) + timestamp;
 }
 
@@ -63,7 +63,7 @@ function addMinutesToTimestamp(mins, timestamp) {
  * @param {number} timestamp a date timestamp
  * @return {number} timestamp incremented with the specified hours
  */
-function addHoursToTimestamp(hours, timestamp) {
+function addHoursToMsecs(hours, timestamp) {
   return hoursToMsecs(hours) + timestamp;
 }
 
@@ -72,7 +72,7 @@ function addHoursToTimestamp(hours, timestamp) {
  * @param {number} timestamp a date timestamp
  * @return {number} timestamp incremented with the specified days
  */
-function addDaysToTimestamp(days, timestamp) {
+function addDaysToMsecs(days, timestamp) {
   return daysToMsecs(days) + timestamp;
 }
 
