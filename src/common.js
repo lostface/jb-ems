@@ -49,7 +49,7 @@ const addSecsToMsecs = addf(secsToMsecs, R.identity);
  * @param {number} msecs milliseseconds
  * @return {number} msecs incremented with the specified minutes
  */
-const addMinutesToMsecs = addf(minsToMsecs, R.identity);
+const addMinsToMsecs = addf(minsToMsecs, R.identity);
 
 /**
  * @param {number} hours hours
@@ -67,7 +67,7 @@ const addDaysToMsecs = addf(daysToMsecs, R.identity);
 
 module.exports = {
   addSecsToMsecs,
-  addMinutesToMsecs,
+  addMinsToMsecs,
   addHoursToMsecs,
   addDaysToMsecs,
   daysToMsecs,

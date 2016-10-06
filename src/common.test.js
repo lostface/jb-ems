@@ -11,7 +11,7 @@ const minsToMsecs = common.minsToMsecs;
 const hoursToMsecs = common.hoursToMsecs;
 const daysToMsecs = common.daysToMsecs;
 const addSecsToMsecs = common.addSecsToMsecs;
-const addMinutesToMsecs = common.addMinutesToMsecs;
+const addMinsToMsecs = common.addMinsToMsecs;
 const addHoursToMsecs = common.addHoursToMsecs;
 const addDaysToMsecs = common.addDaysToMsecs;
 
@@ -130,13 +130,13 @@ test('addSecsToMsecs output', function(t) {
   t.end();
 });
 
-test('addMinutesToMsecs output', function(t) {
+test('addMinsToMsecs output', function(t) {
   const mins = 33;
   const timestamp = 0;
   const expected = 33 * 60 * 1000; // 1980000
-  const actual = addMinutesToMsecs(mins, timestamp);
+  const actual = addMinsToMsecs(mins, timestamp);
 
-  t.equal(actual, expected, `addMinutesToMsecs should return (${expected})`);
+  t.equal(actual, expected, `addMinsToMsecs should return (${expected})`);
   t.end();
 });
 
